@@ -64,6 +64,13 @@ fun QuizNavHost() {
                 }) {
                     Text("Back")
                 }
+
+                Button(onClick = {
+                    navController.popBackStack("topics", false)
+                }) {
+                    Text("Back to Topics")
+                }
+
             }
         }
 
