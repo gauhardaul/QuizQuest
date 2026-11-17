@@ -21,10 +21,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             MobileProjectTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
+                    QuizNavHost()
                 }
             }
         }
