@@ -17,6 +17,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 
 @Composable
 fun TopicsScreen(
+    onTopicClick: (String) -> Unit,
+    onHistoryClick: () -> Unit,
     viewModel: TopicsViewModel = viewModel()
 ) {
 
@@ -25,6 +27,7 @@ fun TopicsScreen(
     Column(
         modifier = Modifier.padding(16.dp)
     ) {
+
         Text(
             text = "QuizQuest",
             fontSize = 28.sp
@@ -32,10 +35,18 @@ fun TopicsScreen(
 
         LazyColumn {
             items(topics) { topic ->
-                Button(onClick = {}) {
+                Button(
+                    onClick = {
+                        onTopicClick(topic)
+                    }
+                ) {
                     Text(text = topic)
                 }
             }
+        }
+
+        Button(onClick = onHistoryClick) {
+            Text("History")
         }
     }
 }
