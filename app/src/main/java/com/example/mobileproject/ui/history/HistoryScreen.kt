@@ -32,6 +32,10 @@ fun HistoryScreen(
             modifier = Modifier.weight(1f),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
+            if (history.isEmpty()) {
+                item { Text("No results yet") }
+            }
+
             items(history.asReversed()) { result ->
                 Row(
                     modifier = Modifier.fillMaxWidth(),
