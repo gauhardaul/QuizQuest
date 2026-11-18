@@ -6,7 +6,14 @@ private val mathQuestions = listOf(
     Question("How many sides does a hexagon have?", listOf("5", "6", "7", "8"), "6")
 )
 
+private val itQuestions = listOf(
+    Question("How many bits are in a byte?", listOf("2", "4", "8", "16"), "8"),
+    Question("Which device is used to type text?", listOf("Monitor", "Keyboard", "Speaker", "Printer"), "Keyboard"),
+    Question("Which language is used in this app?", listOf("Kotlin", "HTML", "Python", "SQL"), "Kotlin")
+)
+
 fun questionsFor(topic: String): List<Question> = when (topic) {
     "Math" -> mathQuestions
+    "IT" -> itQuestions
     else -> emptyList()
 }
