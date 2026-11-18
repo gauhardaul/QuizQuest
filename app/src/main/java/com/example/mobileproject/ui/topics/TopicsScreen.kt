@@ -2,6 +2,7 @@
 package com.example.mobileproject.ui.topics
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
@@ -40,9 +41,12 @@ fun TopicsScreen(
             Text("Choose a topic", style = MaterialTheme.typography.bodyLarge)
         }
 
-        items(topics) { topic ->
-            Button(onClick = { onTopicClick(topic) }) {
-                Text(topic)
+        items(topics, key = { it.name }) { topic ->
+            Column {
+                Button(onClick = { onTopicClick(topic.name) }) {
+                    Text(topic.name)
+                }
+                Text(topic.description, style = MaterialTheme.typography.bodyMedium)
             }
         }
 
