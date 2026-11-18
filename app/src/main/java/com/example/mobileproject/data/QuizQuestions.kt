@@ -12,8 +12,15 @@ private val itQuestions = listOf(
     Question("Which language is used in this app?", listOf("Kotlin", "HTML", "Python", "SQL"), "Kotlin")
 )
 
+private val scienceQuestions = listOf(
+    Question("Which planet is closest to the Sun?", listOf("Earth", "Mars", "Venus", "Mercury"), "Mercury"),
+    Question("What gas do plants absorb during photosynthesis?", listOf("Oxygen", "Helium", "Carbon dioxide", "Hydrogen"), "Carbon dioxide"),
+    Question("What is the chemical formula for water?", listOf("CO2", "H2O", "O2", "NaCl"), "H2O")
+)
+
 fun questionsFor(topic: String): List<Question> = when (topic) {
     "Math" -> mathQuestions
     "IT" -> itQuestions
+    "Science" -> scienceQuestions
     else -> emptyList()
 }
