@@ -69,14 +69,22 @@ fun QuizNavHost(
         }
 
         composable("results") {
-            val state by quizViewModel.uiState.collectAsState()
+            val history by quizViewModel.history.collectAsState()
+            val result = history.lastOrNull()
+            if (result == null) {
+                LaunchedEffect(Unit) {
+                    navController.popBackStack("topics", false)
+                }
+                return@composable
+            }
+
             ResultsScreen(
-                topic = state.topic,
-                score = state.score,
-                total = state.questions.size,
+                topic = result.topic,
+                score = result.score,
+                total = result.total,
                 onRetryClick = {
-                    quizViewModel.startQuiz(state.topic)
-                    navController.navigate("quiz/${state.topic}") {
+                    quizViewModel.startQuiz(result.topic)
+                    navController.navigate("quiz/${result.topic}") {
                         popUpTo("topics")
                     }
                 },
