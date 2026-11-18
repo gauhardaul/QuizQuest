@@ -20,6 +20,7 @@ fun ResultsScreen(
     modifier: Modifier = Modifier
 ) {
     val percent = calculatePercent(score, total)
+    val message = getResultMessage(percent)
     Column(
         modifier = modifier.padding(16.dp)
     ) {
@@ -47,6 +48,13 @@ fun ResultsScreen(
         Text(
             text = "$percent% correct answers",
             style = MaterialTheme.typography.bodyLarge
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Text(
+            text = message,
+            style = MaterialTheme.typography.titleLarge
         )
     }
 }
