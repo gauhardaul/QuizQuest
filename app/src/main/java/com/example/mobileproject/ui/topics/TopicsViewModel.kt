@@ -2,10 +2,13 @@
 package com.example.mobileproject.ui.topics
 
 import androidx.lifecycle.ViewModel
+import com.example.mobileproject.data.questionsFor
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
-data class QuizTopic(val name: String, val description: String)
+data class QuizTopic(val name: String, val description: String) {
+    val questionCount: Int = questionsFor(name).size
+}
 
 class TopicsViewModel : ViewModel() {
 

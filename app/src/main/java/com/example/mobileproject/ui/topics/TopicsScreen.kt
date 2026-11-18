@@ -54,6 +54,11 @@ fun TopicsScreen(
                 ) {
                     Text(topic.name, style = MaterialTheme.typography.titleMedium)
                     Text(topic.description, style = MaterialTheme.typography.bodyMedium)
+                    Text(
+                        text = "${topic.questionCount} questions",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
                 }
             }
         }
