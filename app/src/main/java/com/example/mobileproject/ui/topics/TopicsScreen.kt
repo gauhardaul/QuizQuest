@@ -5,9 +5,11 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Button
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -42,11 +44,17 @@ fun TopicsScreen(
         }
 
         items(topics, key = { it.name }) { topic ->
-            Column {
-                Button(onClick = { onTopicClick(topic.name) }) {
-                    Text(topic.name)
+            OutlinedCard(
+                onClick = { onTopicClick(topic.name) },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Column(
+                    modifier = Modifier.padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    Text(topic.name, style = MaterialTheme.typography.titleMedium)
+                    Text(topic.description, style = MaterialTheme.typography.bodyMedium)
                 }
-                Text(topic.description, style = MaterialTheme.typography.bodyMedium)
             }
         }
 
