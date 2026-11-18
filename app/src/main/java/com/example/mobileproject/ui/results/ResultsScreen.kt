@@ -34,6 +34,14 @@ fun ResultsScreen(
             text = "Topic: $topic",
             style = MaterialTheme.typography.titleMedium
         )
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        Text(
+            text = "$score / $total",
+            style = MaterialTheme.typography.displayMedium,
+            color = MaterialTheme.colorScheme.primary
+        )
     }
 }
 
