@@ -102,3 +102,32 @@ fun ResultsScreenPreview() {
         )
     }
 }
+
+
+@Preview(showBackground = true, name = "0 из 3")
+@Composable
+fun ResultsScreenZeroPreview() {
+    MobileProjectTheme {
+        ResultsScreen(
+            topic = "IT",
+            score = 0,
+            total = 3,
+            onRetryClick = {},
+            onBackToTopicsClick = {}
+        )
+    }
+}
+
+@Preview(showBackground = true, name = "3 из 3")
+@Composable
+fun ResultsScreenFullPreview() {
+    MobileProjectTheme {
+        ResultsScreen(
+            topic = "Science",
+            score = 3,
+            total = 3,
+            onRetryClick = {},
+            onBackToTopicsClick = {}
+        )
+    }
+}
