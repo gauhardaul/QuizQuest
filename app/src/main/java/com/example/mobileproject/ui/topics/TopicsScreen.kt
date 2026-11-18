@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.mobileproject.ui.components.QuizButton
 import com.example.mobileproject.ui.theme.MobileProjectTheme
 
 @Composable
@@ -46,9 +47,11 @@ fun TopicsScreen(
         }
 
         item {
-            Button(onClick = onHistoryClick) {
-                Text("History")
-            }
+            QuizButton(
+                text = "History",
+                onClick = onHistoryClick,
+                isSecondary = true
+            )
         }
     }
 }
