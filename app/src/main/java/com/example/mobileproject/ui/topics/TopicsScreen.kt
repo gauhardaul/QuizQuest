@@ -1,6 +1,7 @@
 
 package com.example.mobileproject.ui.topics
 
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -73,7 +74,14 @@ fun TopicsScreen(
     }
 }
 
-@Preview(showBackground = true, showSystemUi = true)
+@Preview(name = "Phone", showBackground = true, showSystemUi = true)
+@Preview(
+    name = "Compact dark",
+    showBackground = true,
+    widthDp = 320,
+    heightDp = 520,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
 @Composable
 private fun TopicsScreenPreview() {
     val previewViewModel = remember { TopicsViewModel() }
