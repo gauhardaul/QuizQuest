@@ -11,12 +11,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.mobileproject.ui.theme.MobileProjectTheme
-
+import com.example.mobileproject.ui.components.QuizButton
 @Composable
 fun ResultsScreen(
     topic: String,
     score: Int,
     total: Int,
+    onRetryClick: () -> Unit,
+    onBackToTopicsClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val percent = calculatePercent(score, total)
@@ -56,6 +58,21 @@ fun ResultsScreen(
             text = message,
             style = MaterialTheme.typography.titleLarge
         )
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        QuizButton(
+            text = "Try Again",
+            onClick = onRetryClick
+        )
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        QuizButton(
+            text = "Back to Topics",
+            onClick = onBackToTopicsClick,
+            isSecondary = true
+        )
     }
 }
 
@@ -63,6 +80,11 @@ fun ResultsScreen(
 @Composable
 fun ResultsScreenPreview() {
     MobileProjectTheme {
-        ResultsScreen(topic = "Math", score = 2, total = 3)
-    }
+        ResultsScreen(
+            topic = "Math",
+            score = 2,
+            total = 3,
+            onRetryClick = {},
+            onBackToTopicsClick = {}
+        )    }
 }
