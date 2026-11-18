@@ -15,6 +15,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.mobileproject.ui.quiz.QuizScreen
 import com.example.mobileproject.ui.quiz.QuizViewModel
+import com.example.mobileproject.ui.results.ResultsScreen
 import com.example.mobileproject.ui.topics.TopicsScreen
 
 @Composable
@@ -68,24 +69,29 @@ fun QuizNavHost(
         }
 
         composable("results") {
-            val state by quizViewModel.uiState.collectAsState()
-            Column {
-                Text("Results Screen")
-                Text("${state.score} / ${state.questions.size}")
-
-                Button(onClick = {
-                    navController.navigateUp()
-                }) {
-                    Text("Back")
-                }
-
-                Button(onClick = {
+            val history by quizViewModel.history.collectAsState()
+            val result = history.lastOrNull()
+            if (result == null) {
+                LaunchedEffect(Unit) {
                     navController.popBackStack("topics", false)
-                }) {
-                    Text("Back to Topics")
                 }
-
+                return@composable
             }
+
+            ResultsScreen(
+                topic = result.topic,
+                score = result.score,
+                total = result.total,
+                onRetryClick = {
+                    quizViewModel.startQuiz(result.topic)
+                    navController.navigate("quiz/${result.topic}") {
+                        popUpTo("topics")
+                    }
+                },
+                onBackToTopicsClick = {
+                    navController.popBackStack("topics", false)
+                }
+            )
         }
 
         composable("history") {
