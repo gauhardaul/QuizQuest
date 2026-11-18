@@ -21,7 +21,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             MobileProjectTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    QuizNavHost()
+                    QuizNavHost(modifier = Modifier.padding(innerPadding))
                 }
             }
         }
