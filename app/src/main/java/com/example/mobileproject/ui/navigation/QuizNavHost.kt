@@ -1,9 +1,6 @@
 
 package com.example.mobileproject.ui.navigation
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -13,6 +10,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.mobileproject.ui.history.HistoryScreen
 import com.example.mobileproject.ui.quiz.QuizScreen
 import com.example.mobileproject.ui.quiz.QuizViewModel
 import com.example.mobileproject.ui.results.ResultsScreen
@@ -95,15 +93,11 @@ fun QuizNavHost(
         }
 
         composable("history") {
-            Column {
-                Text("History Screen")
-
-                Button(onClick = {
-                    navController.navigateUp()
-                }) {
-                    Text("Back")
-                }
-            }
+            val history by quizViewModel.history.collectAsState()
+            HistoryScreen(
+                history = history,
+                onBack = { navController.navigateUp() }
+            )
         }
     }
 }
