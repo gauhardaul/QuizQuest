@@ -2,6 +2,7 @@ package com.example.mobileproject.ui.quiz
 
 import androidx.lifecycle.ViewModel
 import com.example.mobileproject.data.Question
+import com.example.mobileproject.data.QuizResult
 import com.example.mobileproject.data.questionsFor
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -22,6 +23,9 @@ data class QuizUiState(
 class QuizViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(QuizUiState())
     val uiState: StateFlow<QuizUiState> = _uiState.asStateFlow()
+
+    private val _history = MutableStateFlow<List<QuizResult>>(emptyList())
+    val history: StateFlow<List<QuizResult>> = _history.asStateFlow()
 
     fun startQuiz(topic: String) {
         _uiState.value = QuizUiState(topic = topic, questions = questionsFor(topic))
@@ -51,6 +55,11 @@ class QuizViewModel : ViewModel() {
             score = score,
             isFinished = isFinished
         )
+        if (isFinished) {
+            val result = QuizResult(state.topic, score, state.questions.size)
+            _history.value = _history.value + result
+        }
+
         return isFinished
     }
 }
