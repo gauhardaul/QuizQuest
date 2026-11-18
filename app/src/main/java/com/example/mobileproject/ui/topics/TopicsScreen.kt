@@ -10,10 +10,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.mobileproject.ui.theme.MobileProjectTheme
 
 @Composable
 fun TopicsScreen(
@@ -48,5 +51,19 @@ fun TopicsScreen(
         Button(onClick = onHistoryClick) {
             Text("History")
         }
+    }
+}
+
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+private fun TopicsScreenPreview() {
+    val previewViewModel = remember { TopicsViewModel() }
+
+    MobileProjectTheme {
+        TopicsScreen(
+            viewModel = previewViewModel,
+            onTopicClick = {},
+            onHistoryClick = {}
+        )
     }
 }
