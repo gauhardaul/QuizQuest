@@ -1,8 +1,9 @@
 
 package com.example.mobileproject.ui.topics
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
@@ -27,34 +28,27 @@ fun TopicsScreen(
 
     val topics by viewModel.topics.collectAsState()
 
-    Column(
-        modifier = Modifier.padding(16.dp)
+    LazyColumn(
+        modifier = Modifier.fillMaxSize(),
+        contentPadding = PaddingValues(24.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
 
-        Text(
-            text = "QuizQuest",
-            style = MaterialTheme.typography.headlineLarge
-        )
+        item {
+            Text("QuizQuest", style = MaterialTheme.typography.headlineLarge)
+            Text("Choose a topic", style = MaterialTheme.typography.bodyLarge)
+        }
 
-        Text(
-            text = "Choose a topic",
-            style = MaterialTheme.typography.bodyLarge
-        )
-
-        LazyColumn {
-            items(topics) { topic ->
-                Button(
-                    onClick = {
-                        onTopicClick(topic)
-                    }
-                ) {
-                    Text(text = topic)
-                }
+        items(topics) { topic ->
+            Button(onClick = { onTopicClick(topic) }) {
+                Text(topic)
             }
         }
 
-        Button(onClick = onHistoryClick) {
-            Text("History")
+        item {
+            Button(onClick = onHistoryClick) {
+                Text("History")
+            }
         }
     }
 }
