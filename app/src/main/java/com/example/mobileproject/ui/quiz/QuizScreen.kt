@@ -39,6 +39,30 @@ fun QuizScreen(
         if (question != null) {
             Text("Question ${state.questionIndex + 1} of ${state.questions.size}")
             Text(question.text)
+
+            question.options.forEach { answer ->
+                OutlinedButton(
+                    onClick = { viewModel.selectAnswer(answer) },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    val label = if (answer == state.selectedAnswer) "✓ $answer" else answer
+                    Text(label)
+                }
+            }
+
+            Button(
+                onClick = {
+                    if (viewModel.nextQuestion()) {
+                        onFinished()
+                    }
+                },
+                enabled = state.selectedAnswer != null
+            ) {
+                val isLast = state.questionIndex == state.questions.lastIndex
+                Text(if (isLast) "Finish Quiz" else "Next Question")
+            }
+        } else if (state.questions.isEmpty()) {
+            Text("No questions available")
         }
 
         OutlinedButton(onClick = onBack) {
