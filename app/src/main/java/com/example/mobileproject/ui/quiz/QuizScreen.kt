@@ -73,8 +73,11 @@ fun QuizScreen(
             Button(onClick = viewModel::retry) {
                 Text("Retry")
             }
-        } else if (state.questions.isEmpty()) {
-            Text("No questions available")
+        } else if (state.loadState == QuizLoadState.Empty) {
+            Text("No questions available.")
+            Button(onClick = viewModel::retry) {
+                Text("Retry")
+            }
         }
 
         OutlinedButton(onClick = onBack) {
