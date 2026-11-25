@@ -4,24 +4,62 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.core.view.WindowCompat
 import com.example.mobileproject.ui.theme.MobileProjectTheme
 import com.example.mobileproject.ui.navigation.QuizNavHost
+import com.example.mobileproject.ui.settings.SettingsViewModel
+import com.example.mobileproject.ui.settings.SettingsViewModelFactory
 
 class MainActivity : ComponentActivity() {
+    private val settingsViewModel by viewModels<SettingsViewModel> { SettingsViewModelFactory }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            MobileProjectTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    QuizNavHost(modifier = Modifier.padding(innerPadding))
+            val savedTheme by settingsViewModel.darkTheme.collectAsState()
+            val darkTheme = savedTheme ?: isSystemInDarkTheme()
+
+            SideEffect {
+                WindowCompat.getInsetsController(window, window.decorView).apply {
+                    isAppearanceLightStatusBars = !darkTheme
+                    isAppearanceLightNavigationBars = !darkTheme
+                }
+            }
+
+            val snackbarHost = remember { SnackbarHostState() }
+            LaunchedEffect(settingsViewModel) {
+                settingsViewModel.saveErrors.collect {
+                    snackbarHost.showSnackbar("Could not save the theme preference.")
+                }
+            }
+
+            MobileProjectTheme(darkTheme = darkTheme) {
+                Scaffold(
+                    modifier = Modifier.fillMaxSize(),
+                    snackbarHost = { SnackbarHost(snackbarHost) }
+                ) { innerPadding ->
+                    QuizNavHost(
+                        modifier = Modifier.padding(innerPadding),
+                        darkTheme = darkTheme,
+                        onDarkThemeChange = settingsViewModel::setDarkTheme
+                    )
                 }
             }
         }

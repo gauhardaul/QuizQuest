@@ -19,7 +19,9 @@ import com.example.mobileproject.ui.topics.TopicsScreen
 @Composable
 fun QuizNavHost(
     modifier: Modifier = Modifier,
-    quizViewModel: QuizViewModel = viewModel()
+    quizViewModel: QuizViewModel = viewModel(),
+    darkTheme: Boolean = false,
+    onDarkThemeChange: ((Boolean) -> Unit)? = null
 ) {
 
     val navController = rememberNavController()
@@ -33,6 +35,8 @@ fun QuizNavHost(
 
         composable("topics") {
             TopicsScreen(
+                darkTheme = darkTheme,
+                onDarkThemeChange = onDarkThemeChange,
                 onTopicClick = { topic ->
                     quizViewModel.startQuiz(topic)
                     navController.navigate("quiz/$topic")
