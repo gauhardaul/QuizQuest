@@ -19,6 +19,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.mobileproject.data.questionsFor
 import com.example.mobileproject.ui.theme.MobileProjectTheme
 
 @Composable
@@ -91,7 +92,9 @@ fun QuizScreen(
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 private fun QuizScreenPreview() {
-    val previewViewModel = remember { QuizViewModel().apply { startQuiz("Math") } }
+    val previewViewModel = remember {
+        QuizViewModel(loadQuestions = { questionsFor(it) }).apply { startQuiz("Math") }
+    }
 
     MobileProjectTheme {
         QuizScreen(
