@@ -67,8 +67,8 @@ fun QuizNavHost(
         }
 
         composable("results") {
-            val history by quizViewModel.history.collectAsState()
-            val result = history.lastOrNull()
+            val completedResult by quizViewModel.completedResult.collectAsState()
+            val result = completedResult
             if (result == null) {
                 LaunchedEffect(Unit) {
                     navController.popBackStack("topics", false)
