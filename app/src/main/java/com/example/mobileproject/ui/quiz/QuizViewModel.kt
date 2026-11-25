@@ -43,8 +43,12 @@ class QuizViewModel(
     private val _history = MutableStateFlow<List<QuizResult>>(emptyList())
     val history: StateFlow<List<QuizResult>> = _history.asStateFlow()
 
+    private val _completedResult = MutableStateFlow<QuizResult?>(null)
+    val completedResult: StateFlow<QuizResult?> = _completedResult.asStateFlow()
+
     fun startQuiz(topic: String) {
         loadJob?.cancel()
+        _completedResult.value = null
         _uiState.value = QuizUiState(topic = topic)
         loadJob = viewModelScope.launch {
             try {
@@ -94,6 +98,7 @@ class QuizViewModel(
         )
         if (isFinished) {
             val result = QuizResult(state.topic, score, state.questions.size)
+            _completedResult.value = result
             _history.value = _history.value + result
         }
 
