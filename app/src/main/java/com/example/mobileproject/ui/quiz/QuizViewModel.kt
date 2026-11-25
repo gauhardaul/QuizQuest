@@ -61,6 +61,13 @@ class QuizViewModel(
         }
     }
 
+    fun retry() {
+        val state = _uiState.value
+        if (state.loadState == QuizLoadState.Error || state.loadState == QuizLoadState.Empty) {
+            startQuiz(state.topic)
+        }
+    }
+
     fun selectAnswer(answer: String) {
         val state = _uiState.value
         val question = state.currentQuestion ?: return

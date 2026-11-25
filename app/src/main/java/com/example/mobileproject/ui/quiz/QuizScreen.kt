@@ -70,6 +70,9 @@ fun QuizScreen(
             }
         } else if (state.loadState == QuizLoadState.Error) {
             Text("Could not load questions.")
+            Button(onClick = viewModel::retry) {
+                Text("Retry")
+            }
         } else if (state.questions.isEmpty()) {
             Text("No questions available")
         }
