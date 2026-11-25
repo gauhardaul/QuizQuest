@@ -5,13 +5,13 @@ import okhttp3.MediaType
 import retrofit2.Retrofit
 import retrofit2.converter.kotlinx.serialization.asConverterFactory
 
+internal val triviaJson = Json { ignoreUnknownKeys = true }
+
 object RetrofitInstance {
     val triviaApi: TriviaApiService by lazy {
-        val json = Json { ignoreUnknownKeys = true }
-
         Retrofit.Builder()
             .baseUrl("https://opentdb.com/")
-            .addConverterFactory(json.asConverterFactory(MediaType.get("application/json")))
+            .addConverterFactory(triviaJson.asConverterFactory(MediaType.get("application/json")))
             .build()
             .create(TriviaApiService::class.java)
     }
