@@ -9,12 +9,18 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.core.view.WindowCompat
 import com.example.mobileproject.ui.theme.MobileProjectTheme
 import com.example.mobileproject.ui.navigation.QuizNavHost
 import com.example.mobileproject.ui.settings.SettingsViewModel
@@ -30,8 +36,25 @@ class MainActivity : ComponentActivity() {
             val savedTheme by settingsViewModel.darkTheme.collectAsState()
             val darkTheme = savedTheme ?: isSystemInDarkTheme()
 
+            SideEffect {
+                WindowCompat.getInsetsController(window, window.decorView).apply {
+                    isAppearanceLightStatusBars = !darkTheme
+                    isAppearanceLightNavigationBars = !darkTheme
+                }
+            }
+
+            val snackbarHost = remember { SnackbarHostState() }
+            LaunchedEffect(settingsViewModel) {
+                settingsViewModel.saveErrors.collect {
+                    snackbarHost.showSnackbar("Could not save the theme preference.")
+                }
+            }
+
             MobileProjectTheme(darkTheme = darkTheme) {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                Scaffold(
+                    modifier = Modifier.fillMaxSize(),
+                    snackbarHost = { SnackbarHost(snackbarHost) }
+                ) { innerPadding ->
                     QuizNavHost(
                         modifier = Modifier.padding(innerPadding),
                         darkTheme = darkTheme,
