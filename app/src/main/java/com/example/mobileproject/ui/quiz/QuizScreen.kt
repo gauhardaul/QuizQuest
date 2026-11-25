@@ -68,6 +68,8 @@ fun QuizScreen(
                 val isLast = state.questionIndex == state.questions.lastIndex
                 Text(if (isLast) "Finish Quiz" else "Next Question")
             }
+        } else if (state.loadState == QuizLoadState.Error) {
+            Text("Could not load questions.")
         } else if (state.questions.isEmpty()) {
             Text("No questions available")
         }
