@@ -55,6 +55,18 @@ class QuizRepositoryTest {
         assertEquals(httpError, error?.cause)
     }
 
+    @Test
+    fun rejectsAQuestionWithDuplicateOptionsAfterDecoding() = runBlocking {
+        val response = TriviaResponse(0, listOf(
+            TriviaQuestionDto("What%20is%202%20%2B%202%3F", "4", listOf("%34", "5", "6"))
+        ))
+        val repository = QuizRepository(FakeTriviaApi(response))
+        val error = runCatching { repository.getQuestions("Math") }.exceptionOrNull()
+
+        assertTrue(error is IOException)
+        assertEquals("Trivia service returned an invalid question.", error?.message)
+    }
+
     private class FakeTriviaApi(
         private val response: TriviaResponse,
         private val failure: HttpException? = null

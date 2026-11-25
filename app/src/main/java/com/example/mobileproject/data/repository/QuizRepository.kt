@@ -30,11 +30,18 @@ class QuizRepository(
         }
         return when (response.responseCode) {
             0 -> response.results.map { item ->
+                val text = decode(item.question)
                 val correct = decode(item.correctAnswer)
-                val incorrect = item.incorrectAnswers.map(::decode)
+                val options = item.incorrectAnswers.map(::decode) + correct
+                if (text.isBlank() || options.size != 4 ||
+                    options.any { it.isBlank() } || options.toSet().size != 4
+                ) {
+                    throw IOException("Trivia service returned an invalid question.")
+                }
+
                 Question(
-                    text = decode(item.question),
-                    options = (incorrect + correct).shuffled(),
+                    text = text,
+                    options = options.shuffled(),
                     correctAnswer = correct
                 )
             }
