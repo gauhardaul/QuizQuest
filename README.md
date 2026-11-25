@@ -13,3 +13,13 @@ wait at least five seconds between requests from the same IP address.
 Question content returned by Open Trivia Database is licensed under
 [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/).
 QuizQuest decodes question text and shuffles the answer order before display.
+
+## Theme setting
+
+Use **Dark theme** on the topic selection screen to switch between the QuizQuest
+light and dark color schemes. The app follows the device theme until you make a
+selection. After that, Preferences DataStore keeps your choice for the next launch.
+
+To check it on a device, select dark mode, close the app completely, and reopen it.
+Repeat with light mode. The **Dark theme** switch should reflect the saved choice,
+and the quiz, results, and history should use the same colors as the topics screen.
