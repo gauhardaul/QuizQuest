@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
@@ -39,7 +40,10 @@ fun QuizScreen(
             style = MaterialTheme.typography.headlineSmall
         )
 
-        if (question != null) {
+        if (state.loadState == QuizLoadState.Loading) {
+            CircularProgressIndicator()
+            Text("Loading questions…")
+        } else if (question != null) {
             Text("Question ${state.questionIndex + 1} of ${state.questions.size}")
             Text(question.text)
 
