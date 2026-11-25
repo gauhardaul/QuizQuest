@@ -8,7 +8,15 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
+enum class QuizLoadState {
+    Loading,
+    Success,
+    Error,
+    Empty
+}
+
 data class QuizUiState(
+    val loadState: QuizLoadState = QuizLoadState.Loading,
     val topic: String = "",
     val questions: List<Question> = emptyList(),
     val questionIndex: Int = 0,
@@ -28,7 +36,11 @@ class QuizViewModel : ViewModel() {
     val history: StateFlow<List<QuizResult>> = _history.asStateFlow()
 
     fun startQuiz(topic: String) {
-        _uiState.value = QuizUiState(topic = topic, questions = questionsFor(topic))
+        _uiState.value = QuizUiState(
+            loadState = QuizLoadState.Success,
+            topic = topic,
+            questions = questionsFor(topic)
+        )
     }
 
     fun selectAnswer(answer: String) {
