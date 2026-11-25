@@ -6,11 +6,11 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.mobileproject.ui.history.HistoryScreen
+import com.example.mobileproject.ui.history.HistoryViewModel
 import com.example.mobileproject.ui.quiz.QuizScreen
 import com.example.mobileproject.ui.quiz.QuizViewModel
 import com.example.mobileproject.ui.results.ResultsScreen
@@ -19,7 +19,8 @@ import com.example.mobileproject.ui.topics.TopicsScreen
 @Composable
 fun QuizNavHost(
     modifier: Modifier = Modifier,
-    quizViewModel: QuizViewModel = viewModel(),
+    quizViewModel: QuizViewModel,
+    historyViewModel: HistoryViewModel,
     darkTheme: Boolean = false,
     onDarkThemeChange: ((Boolean) -> Unit)? = null
 ) {
@@ -75,6 +76,7 @@ fun QuizNavHost(
 
         composable("results") {
             val completedResult by quizViewModel.completedResult.collectAsState()
+            val saveFailed by quizViewModel.saveFailed.collectAsState()
             val result = completedResult
             if (result == null) {
                 LaunchedEffect(Unit) {
@@ -89,6 +91,7 @@ fun QuizNavHost(
                 topic = result.topic,
                 score = result.score,
                 total = result.total,
+                saveFailed = saveFailed,
                 onRetryClick = {
                     quizViewModel.startQuiz(result.topic)
                     navController.navigate("quiz/${result.topic}") {
@@ -102,10 +105,14 @@ fun QuizNavHost(
         }
 
         composable("history") {
-            val history by quizViewModel.history.collectAsState()
+            val history by historyViewModel.history.collectAsState()
+            val error by historyViewModel.error.collectAsState()
             HistoryScreen(
                 history = history,
-                onBack = { navController.navigateUp() }
+                onBack = { navController.navigateUp() },
+                onSaveNote = historyViewModel::updateNote,
+                onDelete = historyViewModel::delete,
+                error = error
             )
         }
     }

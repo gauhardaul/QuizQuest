@@ -34,21 +34,23 @@ data class QuizUiState(
 }
 
 class QuizViewModel(
-    private val loadQuestions: suspend (String) -> List<Question> = QuizRepository()::getQuestions
+    private val loadQuestions: suspend (String) -> List<Question> = QuizRepository()::getQuestions,
+    private val saveResult: suspend (QuizResult) -> Unit
 ) : ViewModel() {
     private var loadJob: Job? = null
     private val _uiState = MutableStateFlow(QuizUiState())
     val uiState: StateFlow<QuizUiState> = _uiState.asStateFlow()
 
-    private val _history = MutableStateFlow<List<QuizResult>>(emptyList())
-    val history: StateFlow<List<QuizResult>> = _history.asStateFlow()
-
     private val _completedResult = MutableStateFlow<QuizResult?>(null)
     val completedResult: StateFlow<QuizResult?> = _completedResult.asStateFlow()
+
+    private val _saveFailed = MutableStateFlow(false)
+    val saveFailed: StateFlow<Boolean> = _saveFailed.asStateFlow()
 
     fun startQuiz(topic: String) {
         loadJob?.cancel()
         _completedResult.value = null
+        _saveFailed.value = false
         _uiState.value = QuizUiState(topic = topic)
         loadJob = viewModelScope.launch {
             try {
@@ -103,7 +105,15 @@ class QuizViewModel(
         if (isFinished) {
             val result = QuizResult(state.topic, score, state.questions.size)
             _completedResult.value = result
-            _history.value = _history.value + result
+            viewModelScope.launch {
+                try {
+                    saveResult(result)
+                } catch (error: CancellationException) {
+                    throw error
+                } catch (_: Exception) {
+                    if (_completedResult.value === result) _saveFailed.value = true
+                }
+            }
         }
 
         return isFinished

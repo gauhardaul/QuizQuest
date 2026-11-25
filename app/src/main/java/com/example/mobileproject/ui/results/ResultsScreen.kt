@@ -24,7 +24,8 @@ fun ResultsScreen(
     total: Int,
     onRetryClick: () -> Unit,
     onBackToTopicsClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    saveFailed: Boolean = false
 ) {
     val percent = calculatePercent(score, total)
     val message = getResultMessage(percent)
@@ -71,6 +72,15 @@ fun ResultsScreen(
             style = MaterialTheme.typography.titleLarge,
             textAlign = TextAlign.Center
         )
+
+        if (saveFailed) {
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = "Could not save this attempt to history.",
+                color = MaterialTheme.colorScheme.error,
+                textAlign = TextAlign.Center
+            )
+        }
 
         Spacer(modifier = Modifier.height(40.dp))
 

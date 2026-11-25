@@ -23,3 +23,14 @@ selection. After that, Preferences DataStore keeps your choice for the next laun
 To check it on a device, select dark mode, close the app completely, and reopen it.
 Repeat with light mode. The **Dark theme** switch should reflect the saved choice,
 and the quiz, results, and history should use the same colors as the topics screen.
+
+## Saved quiz history
+
+QuizQuest writes each completed attempt to an on-device Room database. Open
+**History** to see the newest attempts first. Add or change a note with
+**Edit note**. Use **Delete** and confirm to remove the attempt and its note.
+
+To verify persistence, finish two quizzes, edit a note on one attempt, and delete
+the other. Close the app completely and reopen it. History should still show the
+remaining attempt and its note. The earlier in-memory history from Week 12 is
+available only within the original app session.

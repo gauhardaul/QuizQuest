@@ -43,7 +43,7 @@ class QuizViewModelTest {
                 2 -> emptyList()
                 else -> questionsFor(topic)
             }
-        })
+        }, saveResult = {})
 
         quiz.startQuiz("IT")
         assertEquals(QuizLoadState.Loading, quiz.uiState.value.loadState)
@@ -73,7 +73,7 @@ class QuizViewModelTest {
                 }
             }
             questionsFor(topic)
-        })
+        }, saveResult = {})
 
         quiz.startQuiz("Math")
         runCurrent()
@@ -87,7 +87,8 @@ class QuizViewModelTest {
 
     @Test
     fun publishesTheScoreOnceAndResetsOnlyTheCurrentAttempt() = runTest {
-        val quiz = QuizViewModel(loadQuestions = { questionsFor(it) })
+        val saved = mutableListOf<QuizResult>()
+        val quiz = QuizViewModel(loadQuestions = { questionsFor(it) }, saveResult = { saved += it })
         quiz.startQuiz("Math")
         runCurrent()
         assertFalse(quiz.nextQuestion())
@@ -99,9 +100,10 @@ class QuizViewModelTest {
         assertTrue(quiz.nextQuestion())
         assertFalse(quiz.nextQuestion())
 
+        runCurrent()
         val result = QuizResult("Math", 2, 3)
         assertEquals(result, quiz.completedResult.value)
-        assertEquals(listOf(result), quiz.history.value)
+        assertEquals(listOf(result), saved)
 
         quiz.startQuiz("Math")
         runCurrent()
@@ -109,6 +111,22 @@ class QuizViewModelTest {
         assertEquals(0, quiz.uiState.value.score)
         assertEquals(0, quiz.uiState.value.questionIndex)
         assertNull(quiz.uiState.value.selectedAnswer)
-        assertEquals(listOf(result), quiz.history.value)
+        assertEquals(listOf(result), saved)
+    }
+
+    @Test
+    fun failedWriteKeepsTheCompletedScoreAvailable() = runTest {
+        val quiz = QuizViewModel(
+            loadQuestions = { questionsFor(it).take(1) },
+            saveResult = { throw IOException("Disk write failed") }
+        )
+        quiz.startQuiz("Math")
+        runCurrent()
+        quiz.selectAnswer("4")
+        assertTrue(quiz.nextQuestion())
+        runCurrent()
+
+        assertEquals(QuizResult("Math", 1, 1), quiz.completedResult.value)
+        assertTrue(quiz.saveFailed.value)
     }
 }

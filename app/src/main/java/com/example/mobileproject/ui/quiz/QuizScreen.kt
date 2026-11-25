@@ -93,7 +93,7 @@ fun QuizScreen(
 @Composable
 private fun QuizScreenPreview() {
     val previewViewModel = remember {
-        QuizViewModel(loadQuestions = { questionsFor(it) }).apply { startQuiz("Math") }
+        QuizViewModel(loadQuestions = { questionsFor(it) }, saveResult = {}).apply { startQuiz("Math") }
     }
 
     MobileProjectTheme {
