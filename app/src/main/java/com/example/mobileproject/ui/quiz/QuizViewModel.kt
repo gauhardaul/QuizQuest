@@ -65,6 +65,10 @@ class QuizViewModel(
         }
     }
 
+    fun cancelLoading() {
+        loadJob?.cancel()
+    }
+
     fun retry() {
         val state = _uiState.value
         if (state.loadState == QuizLoadState.Error || state.loadState == QuizLoadState.Empty) {

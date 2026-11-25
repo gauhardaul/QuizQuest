@@ -62,7 +62,10 @@ fun QuizNavHost(
                         popUpTo("topics")
                     }
                 },
-                onBack = { navController.navigateUp() }
+                onBack = {
+                    quizViewModel.cancelLoading()
+                    navController.navigateUp()
+                }
             )
         }
 

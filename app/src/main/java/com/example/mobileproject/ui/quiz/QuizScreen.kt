@@ -1,5 +1,6 @@
 package com.example.mobileproject.ui.quiz
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -28,6 +29,7 @@ fun QuizScreen(
 ) {
     val state by viewModel.uiState.collectAsState()
     val question = state.currentQuestion
+    BackHandler(onBack = onBack)
 
     Column(
         modifier = Modifier
