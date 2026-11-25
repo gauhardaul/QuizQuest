@@ -1,9 +1,14 @@
 package com.example.mobileproject.ui.quiz
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.mobileproject.data.Question
 import com.example.mobileproject.data.QuizResult
-import com.example.mobileproject.data.questionsFor
+import com.example.mobileproject.data.repository.QuizRepository
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.ensureActive
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -28,7 +33,10 @@ data class QuizUiState(
         get() = questions.getOrNull(questionIndex)
 }
 
-class QuizViewModel : ViewModel() {
+class QuizViewModel(
+    private val loadQuestions: suspend (String) -> List<Question> = QuizRepository()::getQuestions
+) : ViewModel() {
+    private var loadJob: Job? = null
     private val _uiState = MutableStateFlow(QuizUiState())
     val uiState: StateFlow<QuizUiState> = _uiState.asStateFlow()
 
@@ -36,11 +44,21 @@ class QuizViewModel : ViewModel() {
     val history: StateFlow<List<QuizResult>> = _history.asStateFlow()
 
     fun startQuiz(topic: String) {
-        _uiState.value = QuizUiState(
-            loadState = QuizLoadState.Success,
-            topic = topic,
-            questions = questionsFor(topic)
-        )
+        loadJob?.cancel()
+        _uiState.value = QuizUiState(topic = topic)
+        loadJob = viewModelScope.launch {
+            try {
+                val questions = loadQuestions(topic)
+                ensureActive()
+                val loadState = if (questions.isEmpty()) QuizLoadState.Empty else QuizLoadState.Success
+                _uiState.value = QuizUiState(loadState = loadState, topic = topic, questions = questions)
+            } catch (error: CancellationException) {
+                throw error
+            } catch (error: Exception) {
+                ensureActive()
+                _uiState.value = QuizUiState(loadState = QuizLoadState.Error, topic = topic)
+            }
+        }
     }
 
     fun selectAnswer(answer: String) {
