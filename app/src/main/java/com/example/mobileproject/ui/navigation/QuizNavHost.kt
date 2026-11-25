@@ -74,7 +74,9 @@ fun QuizNavHost(
             val result = completedResult
             if (result == null) {
                 LaunchedEffect(Unit) {
-                    navController.popBackStack("topics", false)
+                    if (navController.currentDestination?.route == "results") {
+                        navController.popBackStack("topics", false)
+                    }
                 }
                 return@composable
             }
