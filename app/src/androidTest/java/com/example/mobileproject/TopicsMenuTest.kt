@@ -1,7 +1,7 @@
 package com.example.mobileproject
 
 import androidx.compose.ui.test.assertCountEquals
-import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
@@ -10,10 +10,12 @@ import org.junit.Test
 
 class TopicsMenuTest {
     @get:Rule
-    val compose = createAndroidComposeRule<MainActivity>()
+    val compose = createComposeRule()
 
     @Test
     fun opensTheQuizForEachTopicAndKeepsHistoryAccessible() {
+        compose.setQuizTestContent()
+
         compose.onNodeWithText("Choose a topic").assertExists()
         compose.onAllNodesWithText("3 questions", substring = true).assertCountEquals(3)
 
