@@ -1,6 +1,6 @@
 package com.example.mobileproject
 
-import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import org.junit.Rule
@@ -8,10 +8,12 @@ import org.junit.Test
 
 class HistoryNavigationTest {
     @get:Rule
-    val compose = createAndroidComposeRule<MainActivity>()
+    val compose = createComposeRule()
 
     @Test
     fun showsEmptyHistoryThenRecordsAttemptsForEveryTopic() {
+        compose.setQuizTestContent()
+
         compose.onNodeWithText("History").performClick()
         compose.onNodeWithText("No results yet").assertExists()
         compose.onNodeWithText("Back").performClick()

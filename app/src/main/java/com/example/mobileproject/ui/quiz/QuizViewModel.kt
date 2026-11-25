@@ -1,14 +1,27 @@
 package com.example.mobileproject.ui.quiz
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.mobileproject.data.Question
 import com.example.mobileproject.data.QuizResult
-import com.example.mobileproject.data.questionsFor
+import com.example.mobileproject.data.repository.QuizRepository
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.ensureActive
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
+enum class QuizLoadState {
+    Loading,
+    Success,
+    Error,
+    Empty
+}
+
 data class QuizUiState(
+    val loadState: QuizLoadState = QuizLoadState.Loading,
     val topic: String = "",
     val questions: List<Question> = emptyList(),
     val questionIndex: Int = 0,
@@ -20,15 +33,47 @@ data class QuizUiState(
         get() = questions.getOrNull(questionIndex)
 }
 
-class QuizViewModel : ViewModel() {
+class QuizViewModel(
+    private val loadQuestions: suspend (String) -> List<Question> = QuizRepository()::getQuestions
+) : ViewModel() {
+    private var loadJob: Job? = null
     private val _uiState = MutableStateFlow(QuizUiState())
     val uiState: StateFlow<QuizUiState> = _uiState.asStateFlow()
 
     private val _history = MutableStateFlow<List<QuizResult>>(emptyList())
     val history: StateFlow<List<QuizResult>> = _history.asStateFlow()
 
+    private val _completedResult = MutableStateFlow<QuizResult?>(null)
+    val completedResult: StateFlow<QuizResult?> = _completedResult.asStateFlow()
+
     fun startQuiz(topic: String) {
-        _uiState.value = QuizUiState(topic = topic, questions = questionsFor(topic))
+        loadJob?.cancel()
+        _completedResult.value = null
+        _uiState.value = QuizUiState(topic = topic)
+        loadJob = viewModelScope.launch {
+            try {
+                val questions = loadQuestions(topic)
+                ensureActive()
+                val loadState = if (questions.isEmpty()) QuizLoadState.Empty else QuizLoadState.Success
+                _uiState.value = QuizUiState(loadState = loadState, topic = topic, questions = questions)
+            } catch (error: CancellationException) {
+                throw error
+            } catch (error: Exception) {
+                ensureActive()
+                _uiState.value = QuizUiState(loadState = QuizLoadState.Error, topic = topic)
+            }
+        }
+    }
+
+    fun cancelLoading() {
+        loadJob?.cancel()
+    }
+
+    fun retry() {
+        val state = _uiState.value
+        if (state.loadState == QuizLoadState.Error || state.loadState == QuizLoadState.Empty) {
+            startQuiz(state.topic)
+        }
     }
 
     fun selectAnswer(answer: String) {
@@ -57,6 +102,7 @@ class QuizViewModel : ViewModel() {
         )
         if (isFinished) {
             val result = QuizResult(state.topic, score, state.questions.size)
+            _completedResult.value = result
             _history.value = _history.value + result
         }
 
