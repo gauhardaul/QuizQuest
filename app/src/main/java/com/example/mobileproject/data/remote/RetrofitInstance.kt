@@ -1,7 +1,7 @@
 package com.example.mobileproject.data.remote
 
 import kotlinx.serialization.json.Json
-import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.MediaType
 import retrofit2.Retrofit
 import retrofit2.converter.kotlinx.serialization.asConverterFactory
 
@@ -11,7 +11,7 @@ object RetrofitInstance {
 
         Retrofit.Builder()
             .baseUrl("https://opentdb.com/")
-            .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
+            .addConverterFactory(json.asConverterFactory(MediaType.get("application/json")))
             .build()
             .create(TriviaApiService::class.java)
     }
