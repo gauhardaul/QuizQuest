@@ -12,4 +12,10 @@ interface QuizResultDao {
 
     @Query("SELECT * FROM quiz_results ORDER BY id DESC")
     fun observeResults(): Flow<List<QuizResultEntity>>
+
+    @Query("UPDATE quiz_results SET note = :note WHERE id = :id")
+    suspend fun updateNote(id: Long, note: String)
+
+    @Query("DELETE FROM quiz_results WHERE id = :id")
+    suspend fun delete(id: Long)
 }
