@@ -44,9 +44,13 @@ class QuizViewModel(
     private val _completedResult = MutableStateFlow<QuizResult?>(null)
     val completedResult: StateFlow<QuizResult?> = _completedResult.asStateFlow()
 
+    private val _saveFailed = MutableStateFlow(false)
+    val saveFailed: StateFlow<Boolean> = _saveFailed.asStateFlow()
+
     fun startQuiz(topic: String) {
         loadJob?.cancel()
         _completedResult.value = null
+        _saveFailed.value = false
         _uiState.value = QuizUiState(topic = topic)
         loadJob = viewModelScope.launch {
             try {
@@ -101,7 +105,15 @@ class QuizViewModel(
         if (isFinished) {
             val result = QuizResult(state.topic, score, state.questions.size)
             _completedResult.value = result
-            viewModelScope.launch { saveResult(result) }
+            viewModelScope.launch {
+                try {
+                    saveResult(result)
+                } catch (error: CancellationException) {
+                    throw error
+                } catch (_: Exception) {
+                    if (_completedResult.value === result) _saveFailed.value = true
+                }
+            }
         }
 
         return isFinished

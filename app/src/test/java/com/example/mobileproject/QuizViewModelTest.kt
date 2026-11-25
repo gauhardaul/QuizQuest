@@ -113,4 +113,20 @@ class QuizViewModelTest {
         assertNull(quiz.uiState.value.selectedAnswer)
         assertEquals(listOf(result), saved)
     }
+
+    @Test
+    fun failedWriteKeepsTheCompletedScoreAvailable() = runTest {
+        val quiz = QuizViewModel(
+            loadQuestions = { questionsFor(it).take(1) },
+            saveResult = { throw IOException("Disk write failed") }
+        )
+        quiz.startQuiz("Math")
+        runCurrent()
+        quiz.selectAnswer("4")
+        assertTrue(quiz.nextQuestion())
+        runCurrent()
+
+        assertEquals(QuizResult("Math", 1, 1), quiz.completedResult.value)
+        assertTrue(quiz.saveFailed.value)
+    }
 }

@@ -76,6 +76,7 @@ fun QuizNavHost(
 
         composable("results") {
             val completedResult by quizViewModel.completedResult.collectAsState()
+            val saveFailed by quizViewModel.saveFailed.collectAsState()
             val result = completedResult
             if (result == null) {
                 LaunchedEffect(Unit) {
@@ -90,6 +91,7 @@ fun QuizNavHost(
                 topic = result.topic,
                 score = result.score,
                 total = result.total,
+                saveFailed = saveFailed,
                 onRetryClick = {
                     quizViewModel.startQuiz(result.topic)
                     navController.navigate("quiz/${result.topic}") {
